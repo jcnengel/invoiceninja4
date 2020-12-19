@@ -7,7 +7,7 @@ LABEL maintainer="Johannes Engel <jcnengel@gmail.com>"
 #####
 # SYSTEM REQUIREMENT
 #####
-ARG INVOICENINJA_VERSION
+ARG INVOICENINJA_VERSION=4.5.24
 WORKDIR /var/www/app
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint
@@ -67,22 +67,15 @@ USER $IN_USER
 # Download and install IN
 ENV INVOICENINJA_VERSION="${INVOICENINJA_VERSION}"
 
-RUN curl -s -o /tmp/ninja.zip -SL https://github.com/invoiceninja/invoiceninja/archive/master.zip \
-    && bsdtar --strip-components=1 -C /var/www/app -xf /tmp/ninja.zip \
-    && rm /tmp/ninja.zip \
+RUN curl -s -o /tmp/ninja-$INVOICENINJA_VERSION.zip -SL https://download.invoiceninja.com/ \
+    && bsdtar --strip-components=1 -C /var/www/app -xf /tmp/ninja-$INVOICENINJA_VERSION.zip \
+    && rm /tmp/ninja-$INVOICENINJA_VERSION.zip \
     && mv /var/www/app/storage /var/www/app/docker-backup-storage  \
     && mv /var/www/app/public /var/www/app/docker-backup-public  \
     && mkdir -p /var/www/app/public/logo /var/www/app/storage \
     && cp /var/www/app/.env.example /var/www/app/.env \
     && chmod -R 755 /var/www/app/storage  \
     && rm -rf /var/www/app/docs /var/www/app/tests
-
-# Import composer packages from last released version
-RUN mv /var/www/app/composer.json /var/www/app/composer.json.master \
-    && mv /var/www/app/composer.lock /var/www/app/composer.lock.master \
-    && curl -s -o /tmp/ninja-$INVOICENINJA_VERSION.zip -SL https://download.invoiceninja.com \
-    && bsdtar --strip-components=1 -C /var/www/app -xkf /tmp/ninja-$INVOICENINJA_VERSION.zip \
-    && rm /tmp/ninja-$INVOICENINJA_VERSION.zip
 
 # Override the environment settings from projects .env file
 ENV LOG errorlog
