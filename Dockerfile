@@ -7,7 +7,7 @@ LABEL maintainer="Johannes Engel <jcnengel@gmail.com>"
 #####
 # SYSTEM REQUIREMENT
 #####
-ARG INVOICENINJA_VERSION=4.5.30
+ARG INVOICENINJA_VERSION=4.5.32
 WORKDIR /var/www/app
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint
